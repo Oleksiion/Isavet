@@ -9,9 +9,10 @@
     @apply box-border list-none p-0 m-0 scroll-smooth;
   }
 
-  /* body {
+  body {
     @apply bg-dark-1 text-white min-h-screen font-inter;
-  } */
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -332,11 +333,11 @@
   }
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
