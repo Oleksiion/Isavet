@@ -1,25 +1,30 @@
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+//FORM
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-import { useForm } from "react-hook-form";
 import { SignupValidationFormSchema } from "../../lib/validation/index";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+//COMPONENTS
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+//IMG
 import logo from "/assets/images/logo.svg";
-import { Link } from "react-router-dom";
+//custom FN
 import { createNewUserAccount } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
+  // для проверки
+  // setInterval(() => toast("HELLO"), 1000);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidationFormSchema>>({
     resolver: zodResolver(SignupValidationFormSchema),
@@ -35,7 +40,9 @@ const SignupForm = () => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidationFormSchema>) {
     const newUser = await createNewUserAccount(values);
-    console.log(newUser);
+    if (!newUser) {
+      return toast("Uh oh! Something went wrong");
+    }
   }
 
   return (
