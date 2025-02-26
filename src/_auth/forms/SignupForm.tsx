@@ -19,11 +19,21 @@ import { toast } from "sonner";
 //IMG
 import logo from "/assets/images/logo.svg";
 //custom FN
-import { createNewUserAccount } from "@/lib/appwrite/api";
+// import { createNewUserAccount } from "@/lib/appwrite/api"; - используется сначала в танстаке
+import {
+  useCreateUserAccountMutation,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
 
 const SignupForm = () => {
   // для проверки
   // setInterval(() => toast("HELLO"), 1000);
+
+  const { mutateAsync: createNewUserAccount, isLoading: isCreatingUser } =
+    useCreateUserAccountMutation();
+
+  const { mutateAsync: signInAccount, isLoading: isSigningin } =
+    useSignInAccount();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidationFormSchema>>({
@@ -39,9 +49,19 @@ const SignupForm = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidationFormSchema>) {
+    // создаем и проверяем юзера
     const newUser = await createNewUserAccount(values);
     if (!newUser) {
-      return toast("Uh oh! Something went wrong");
+      return toast("Uh oh! SIGN UP failed");
+    }
+
+    //оздаем и проверяем сессию
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    });
+    if (!session) {
+      return toast("Uh oh! SIGN IN failed");
     }
   }
 
@@ -116,7 +136,7 @@ const SignupForm = () => {
             )}
           />
           <Button className="shad-button_primary w-full" type="submit">
-            Submit
+            {isCreatingUser ? "Loading..." : "Sign up"}
           </Button>
         </form>
 
